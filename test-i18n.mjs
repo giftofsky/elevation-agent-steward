@@ -44,13 +44,13 @@ function check(name, cond) {
 
 // --- 1. Локаль по умолчанию и нормализация ---------------------------------
 resetI18n();
-check("локаль по умолчанию — ru", DEFAULT_LOCALE === "ru");
+check("локаль по умолчанию — en", DEFAULT_LOCALE === "en");
 check(
   "getLocale() после resetI18n — локаль запуска",
   getLocale() === normalizeLocale(process.env.OPENCODE_SCHEDULER_LOCALE)
 );
 setLocale("ru");
-check("SUPPORTED_LOCALES = [ru, en, zh, tr]", SUPPORTED_LOCALES.join(",") === "ru,en,zh,tr");
+check("SUPPORTED_LOCALES = [en, ru, zh, tr]", SUPPORTED_LOCALES.join(",") === "en,ru,zh,tr");
 check("isLocale('ru')", isLocale("ru") === true);
 check("isLocale('en')", isLocale("en") === true);
 check("isLocale('zh')", isLocale("zh") === true);
@@ -60,8 +60,8 @@ check("isLocale(null) — false", isLocale(null) === false);
 check("normalizeLocale('en') → en", normalizeLocale("en") === "en");
 check("normalizeLocale('zh') → zh", normalizeLocale("zh") === "zh");
 check("normalizeLocale('tr') → tr", normalizeLocale("tr") === "tr");
-check("normalizeLocale('de') → ru", normalizeLocale("de") === "ru");
-check("normalizeLocale(undefined) → ru", normalizeLocale(undefined) === "ru");
+check("normalizeLocale('de') → en", normalizeLocale("de") === "en");
+check("normalizeLocale(undefined) → en", normalizeLocale(undefined) === "en");
 
 // BCP 47 → Locale (T7): префиксный маппинг; регистр и разделитель не важны.
 check("mapAppLocale('zh-CN') → zh", mapAppLocale("zh-CN") === "zh");
@@ -70,8 +70,8 @@ check("mapAppLocale('en-GB') → en", mapAppLocale("en-GB") === "en");
 check("mapAppLocale('ru-RU') → ru", mapAppLocale("ru-RU") === "ru");
 check("mapAppLocale('tr-TR') → tr", mapAppLocale("tr-TR") === "tr");
 check("mapAppLocale('ZH_hant_TW') → zh", mapAppLocale("ZH_hant_TW") === "zh");
-check("mapAppLocale('de-DE') → ru", mapAppLocale("de-DE") === "ru");
-check("mapAppLocale('') → ru", mapAppLocale("") === "ru");
+check("mapAppLocale('de-DE') → en", mapAppLocale("de-DE") === "en");
+check("mapAppLocale('') → en", mapAppLocale("") === "en");
 check("normalizeLocale('zh-CN') → zh", normalizeLocale("zh-CN") === "zh");
 
 // Режим локали (T7): auto + явные значения, неизвестное → fallback.
@@ -85,13 +85,13 @@ check("normalizeLocaleMode('zh-CN') → zh", normalizeLocaleMode("zh-CN") === "z
 check("normalizeLocaleMode('de') → auto", normalizeLocaleMode("de") === "auto");
 check("normalizeLocaleMode(undefined) → auto", normalizeLocaleMode(undefined) === "auto");
 check("normalizeLocaleMode('de', 'auto') → auto", normalizeLocaleMode("de", "auto") === "auto");
-check("resolveLocale('auto') → ru", resolveLocale("auto") === "ru");
+check("resolveLocale('auto') → en", resolveLocale("auto") === "en");
 check("resolveLocale('auto', 'zh') → zh", resolveLocale("auto", "zh") === "zh");
-check("resolveLocale('auto', 'uk') → ru", resolveLocale("auto", "uk") === "ru");
+check("resolveLocale('auto', 'uk') → en", resolveLocale("auto", "uk") === "en");
 check("resolveLocale('zh') → zh", resolveLocale("zh") === "zh");
 check("setLocale('en') возвращает en", setLocale("en") === "en");
 check("setLocale меняет getLocale", getLocale() === "en");
-check("setLocale('xx') откатывает к ru", setLocale("xx") === "ru" && getLocale() === "ru");
+check("setLocale('xx') откатывает к en", setLocale("xx") === "en" && getLocale() === "en");
 
 // --- 2. Каталоги на диске ---------------------------------------------------
 const ruFile = catalogPath("ru");
@@ -136,7 +136,7 @@ check("catalogPath('ru') находит locales/ru.json", !!ruFile && ruFile.end
 check("catalogPath('en') находит locales/en.json", !!enFile && enFile.endsWith(path.join("locales", "en.json")));
 check("catalogPath('zh') находит locales/zh.json", !!zhFile && zhFile.endsWith(path.join("locales", "zh.json")));
 check("catalogPath('tr') находит locales/tr.json", !!trFile && trFile.endsWith(path.join("locales", "tr.json")));
-check("availableLocales() = [ru, en, zh, tr]", availableLocales().join(",") === "ru,en,zh,tr");
+check("availableLocales() = [en, ru, zh, tr]", availableLocales().join(",") === "en,ru,zh,tr");
 check("каталоги читаются как JSON-объекты", !!JSON.parse(fs.readFileSync(ruFile, "utf8")));
 check("hasKey('server.notFound', 'ru')", hasKey("server.notFound", "ru") === true);
 check("hasKey('no.such.key', 'ru') — false", hasKey("no.such.key", "ru") === false);
@@ -294,27 +294,27 @@ setLocale("ru");
 check("переключение en → ru", t("server.notFound") === "Страница не найдена.");
 check("смена локали не требует resetI18n", getLocale() === "ru");
 
-// --- 8. Отсутствующий ключ → fallback на ru --------------------------------
-// В en нет ключа, которого нет и в ru, поэтому fallback проверяем на
+// --- 8. Отсутствующий ключ → fallback на en --------------------------------
+// В локалях набор ключей одинаковый, поэтому fallback проверяем на
 // искусственном каталоге: подменяем файл en на время теста нельзя (read-only),
 // зато видно, что отсутствующий ключ возвращает сам ключ, а не пустую строку.
 setLocale("en");
 check("отсутствующий в en ключ → сам ключ", t("no.such.key") === "no.such.key");
 
-// --- 8b. Китайский каталог: fallback на ru --------------------------------
+// --- 8b. Китайский каталог: fallback на en ---------------------------------
 // zh.json наполняется пакетами (план локали закрыт и удалён). Проверяем сам
-// механизм на пустом каталоге: отсутствующий ключ обязан давать русский
+// механизм на пустом каталоге: отсутствующий ключ обязан давать английский
 // вариант, а не сырой ключ. Подмена каталога не зависит от прогресса перевода.
 registerCatalog("zh", {});
 setLocale("zh");
 check("setLocale('zh') возвращает zh", getLocale() === "zh");
 check(
-  "zh: отсутствующий ключ → русский вариант",
-  t("server.notFound") === "Страница не найдена."
+  "zh: отсутствующий ключ → английский вариант",
+  t("server.notFound") === "Page not found."
 );
 check(
-  "zh: плюрализация отсутствующего ключа считается по ru",
-  t("common.runsCount", { count: 5 }) === "запусков: 5 запусков"
+  "zh: плюрализация отсутствующего ключа считается по en",
+  t("common.runsCount", { count: 5 }) === "runs: 5 runs"
 );
 resetI18n();
 

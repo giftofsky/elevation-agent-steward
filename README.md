@@ -53,6 +53,8 @@ Want to see it without installing OpenCode? `node scripts/demo-dashboard.mjs` st
 
 ### Language
 
+The interface ships in English, Russian and Simplified Chinese, and English is the default
+everywhere nothing else is known. By default the language
 The interface ships in Russian, English, Simplified Chinese and Turkish. By default the language
 selector is set to **Auto** — like OpenCode, it follows the OpenCode interface language;
 Russian, English, Chinese and Turkish can be chosen explicitly. The selector sits in the scheduler
@@ -65,7 +67,7 @@ without a restart. The dashboard follows the resolved locale: Russian and Englis
 fully localized (its screenshot in `docs/dashboard.png` is the English variant);
 Chinese and Turkish currently fall back to English for dashboard chrome until their catalogs are ready.
 Agent tool descriptions and schemas stay English by design, and diagnostics printed
-to the console stay Russian.
+to the console follow the active locale — English unless you pick another language.
 
 Catalogs live in `locales/ru.json`, `locales/en.json`, `locales/zh.json` and `locales/tr.json`; every key
 must exist in all four, otherwise CI fails.

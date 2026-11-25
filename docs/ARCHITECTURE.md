@@ -462,7 +462,7 @@ SQLite-карта, и публичный сабпат `agent-steward/router`, к
 | `src/workspaces.ts` | Workspace registry and path validation; env pairs and `.env` file resolution with secret masking |
 | `src/templates.ts` | Reusable task templates |
 | `src/settings.ts` | Plugin settings: notifications, history retention, audit, interface locale (`auto`/`ru`/`en`/`zh`/`tr`) and last known UI locale, local AI/triage |
-| `src/i18n.ts` | Interface locale mode (`auto` default, follows OpenCode; `ru`/`en`/`zh`/`tr` explicit), BCP 47 mapping, four JSON catalogs in `locales/`, ICU subset (`{param}`, `plural`) via built-in `Intl`, fallback catalog `ru` |
+| `src/i18n.ts` | Interface locale mode (`auto` default, follows OpenCode; `ru`/`en`/`zh`/`tr` explicit), BCP 47 mapping, four JSON catalogs in `locales/`, ICU subset (`{param}`, `plural`) via built-in `Intl`, fallback catalog `en` |
 | `src/notifications.ts` | Multi-channel delivery (webhook, Telegram, native OS) with retries/backoff, templates, task filters, quiet hours, matrix and stuck-clone notifications, daily/weekly digest |
 | `src/core/telegram.ts` | Telegram Bot API `sendMessage`: parse-mode escaping, dashboard link, token validation and masking |
 | `src/core/native-notify.ts` | Native OS notifications: Windows Toast (PowerShell/WinRT), macOS `osascript`, Linux `notify-send`; no external dependency |
@@ -1003,18 +1003,18 @@ resume preparation, rejection of a repeated resume, end-to-end comment delivery 
 
 ## Localization
 
-User-visible text lives in flat JSON catalogs: `locales/ru.json` (fallback),
-`locales/en.json`, `locales/zh.json` and `locales/tr.json` (A-5.1). All four catalogs
+User-visible text lives in flat JSON catalogs: `locales/en.json` (fallback and default),
+`locales/ru.json`, `locales/zh.json` and `locales/tr.json` (A-5.1). All four catalogs
 carry the same 916 keys. Keys are dot-separated and grouped by surface —
 `gui.*`, `notify.*`, `tool.*`, `dryRun.*`, `matrix.*`, `schedule.*` — and all catalogs
 must have the same key set with non-empty values.
 
 `src/i18n.ts` loads the catalogs once and caches them. It exposes `t(key, params)`,
 `setLocale(locale)`, `messageIn(locale, key)` and `hasKey(key, locale)`. Lookup order is
-active locale → `en` → `ru` → the key itself, so a missing translation never renders as
+active locale → `en` (the default catalog) → the key itself, so a missing translation never renders as
 an empty string. The `locale` setting (`auto` default, follows the OpenCode interface
 language; `ru`/`en`/`zh`/`tr` are explicit choices) is applied immediately, without restarting
-OpenCode.
+OpenCode. With `auto` and no locale reported by the GUI, English is used.
 `auto` is resolved in the GUI through `ctx.locale.locale()` with BCP 47 prefix mapping
 (`zh-CN` → `zh`, `en-GB` → `en`); the resolved value is sent to the server as `uiLocale`,
 because the server process cannot see the window. The sidebar GUI embeds the catalogs at
@@ -1034,7 +1034,7 @@ Rules:
   concatenate translated fragments;
 - store stable codes, not localized text, in the database; translate at render time;
 - agent tool descriptions, schemas and API payloads stay English; `console.*`
-  diagnostics stay Russian;
+  diagnostics follow the active locale, which defaults to English;
 - add every new key to all catalogs. `test-docs.mjs` enforces parity and non-empty
   values; `npm run test:en`, `npm run test:zh` and `npm run test:tr` replay all suites
   under `en`/`zh`/`tr` and CI runs them. `OPENCODE_SCHEDULER_LOCALE` only overrides the initial locale for tests

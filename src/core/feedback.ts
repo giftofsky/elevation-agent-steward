@@ -193,7 +193,7 @@ export function buildFeedbackPayload(
       arch: clamp(env.arch ?? os.arch(), 32) ?? "unknown",
     },
     node: clamp(env.node ?? process.version, 64) ?? "unknown",
-    locale: clamp(input.locale, 16) ?? "ru",
+    locale: clamp(input.locale, 16) ?? "en",
     profile: clamp(input.profile, 64) ?? "default",
     description: clamp(input.description, FEEDBACK_LIMITS.description) ?? "",
   };

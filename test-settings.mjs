@@ -272,8 +272,8 @@ check(
 // S24: последняя известная локаль интерфейса для серверного процесса.
 const defaultUiLocale = await settingsModule.loadSettings();
 check(
-  "loadSettings: uiLocale по умолчанию — ru",
-  defaultUiLocale.uiLocale === "ru"
+  "loadSettings: uiLocale по умолчанию — en",
+  defaultUiLocale.uiLocale === "en"
 );
 
 await settingsModule.saveSettings({ uiLocale: "zh" });

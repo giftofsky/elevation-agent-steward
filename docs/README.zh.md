@@ -53,6 +53,8 @@ Translations: [English](../README.md) · [Русский](README.ru.md).
 
 ### 语言
 
+界面提供英语、俄语和中文；语言未知时默认使用英语。默认选择「自动」模式——与 OpenCode 一样，界面语言跟随 OpenCode；
+也可以显式选择俄语、英语或中文。语言选择器位于调度器面板顶部（🌐 自动 / Русский / English / 中文），
 界面提供俄语、英语、中文和土耳其语。默认选择「自动」模式——与 OpenCode 一样，界面语言跟随 OpenCode；
 也可以显式选择俄语、英语、中文或土耳其语。语言选择器位于调度器面板顶部（🌐 自动 / Русский / English / 中文 / Türkçe），
 也可通过 `manage_settings` 工具切换（`action: "update"`，`locale: "zh"` 等）。
@@ -60,8 +62,10 @@ Translations: [English](../README.md) · [Русский](README.ru.md).
 并将解析后的语言发送到服务器，使通知、摘要和仪表盘保持一致。切换无需重启。
 仪表盘跟随解析后的语言：俄语和英语已完整本地化（`docs/dashboard.png` 中的截图为英文版）；
 中文目前回退到英文界面文案。按设计，agent 工具描述与 schema 保持英语，
-输出到控制台的诊断信息保持俄语。
+输出到控制台的诊断信息跟随当前语言，默认是英语。
 
+字符串目录位于 `locales/en.json`（默认与回退）、`locales/ru.json` 和 `locales/zh.json`；
+每个键必须同时存在于三者中，否则 CI 会失败。
 字符串目录位于 `locales/ru.json`、`locales/en.json`、`locales/zh.json` 和 `locales/tr.json`；
 每个键必须同时存在于四者中，否则 CI 会失败。
 
